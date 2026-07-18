@@ -6,7 +6,7 @@ const Transaction = require('./models/transaction.js');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 
 app.use(cors()); // 2. Enable CORS for all routes (Must be BEFORE routes)
