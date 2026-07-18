@@ -1,0 +1,21 @@
+# --- Dependencies (Applies to BOTH client/ and server/) ---
+node_modules/
+**/node_modules/
+
+# --- Environment Variables (SECRETS) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Build Outputs ---
+client/build/
+server/dist/
+*.log
+
+# --- OS & Editor Files ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/   
