@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 4000;
 app.use(cors()); // 2. Enable CORS for all routes (Must be BEFORE routes)
 app.use(express.json()); // 3. Enable JSON parsing (You had this commented out!)
 
+app.options('*', cors());
+
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('Connection Error:', err));
