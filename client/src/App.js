@@ -10,17 +10,7 @@ function App() {
   const baseUrl = process.env.REACT_APP_API_URL;
   const transactionUrl = `${baseUrl}server/transaction`;
 
-  // Wrapped in useCallback so it can safely be added to dependency arrays if needed
-  // const getTransactions = useCallback(async () => {
-  //   try {
-  //     const response = await fetch(`${baseUrl}server/transactions`);
-  //     const data = await response.json();
-  //     setTransactions(data);
-  //   } catch (err) {
-  //     console.error("Error fetching transactions:", err);
-  //   }
-  // }, [baseUrl]);
-
+  
   const getTransactions = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}server/transactions`);
