@@ -31,9 +31,6 @@ function App() {
 
 
 
-
-
-
   useEffect(() => {
     getTransactions();
   }, [getTransactions]);
