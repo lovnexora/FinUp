@@ -1,38 +1,45 @@
 const express = require('express');
-const cors = require('cors'); // 1. Import cors
+const cors = require('cors'); 
+const mongoose = require('mongoose'); // 🚀 MOVE THIS RIGHT HERE AT THE TOP
 require('dotenv').config();
 
 const Transaction = require('./models/transaction.js');
-const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+app.use(cors()); 
+app.use(express.json()); 
 
-app.use(cors()); // 2. Enable CORS for all routes (Must be BEFORE routes)
-app.use(express.json()); // 3. Enable JSON parsing (You had this commented out!)
-
-
-
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('Connection Error:', err));
+// Your connectDB function handles everything safely now:
+const connectDB = async () => {
+    if (mongoose.connection.readyState >= 1) return;
+    try {
+        await mongoose.connect(process.env.MONGO_URL);
+        console.log('MongoDB Connected Freshly');
+    } catch (err) {
+        console.error('Database connection failed:', err);
+    }
+};
 
 app.get('/server/test', (req, res) => {
     res.json({ body: 'test ok4' }); 
 });
 
-app.post('/server/transaction',async (req, res) => {
-   
-  const {name,description,datetime,price} = req.body;
-  const transaction = await Transaction.create({name,description,datetime,price});
-
-
-    res.json(transaction);
+app.post('/server/transaction', async (req, res) => {
+  try {
+      await connectDB(); 
+      const { name, description, datetime, price } = req.body;
+      const transaction = await Transaction.create({ name, description, datetime, price });
+      res.json(transaction);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
 });
 
 app.get('/server/transactions', async (req, res) => {
   try {
+      await connectDB(); 
       const transactions = await Transaction.find();
       res.json(transactions);
   } catch (error) {
@@ -40,8 +47,10 @@ app.get('/server/transactions', async (req, res) => {
   }
 });
 
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
 
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});   
+module.exports = app;

@@ -11,15 +11,38 @@ function App() {
   const transactionUrl = `${baseUrl}server/transaction`;
 
   // Wrapped in useCallback so it can safely be added to dependency arrays if needed
+  // const getTransactions = useCallback(async () => {
+  //   try {
+  //     const response = await fetch(`${baseUrl}server/transactions`);
+  //     const data = await response.json();
+  //     setTransactions(data);
+  //   } catch (err) {
+  //     console.error("Error fetching transactions:", err);
+  //   }
+  // }, [baseUrl]);
+
   const getTransactions = useCallback(async () => {
     try {
       const response = await fetch(`${baseUrl}server/transactions`);
       const data = await response.json();
-      setTransactions(data);
+      
+      // 🚀 THE FIX: Only save it if it's actually an array
+      if (Array.isArray(data)) {
+          setTransactions(data);
+      } else {
+          console.error("Server did not return an array:", data);
+          setTransactions([]); // Fallback to safe empty array
+      }
     } catch (err) {
       console.error("Error fetching transactions:", err);
+      setTransactions([]);
     }
   }, [baseUrl]);
+
+
+
+
+
 
   useEffect(() => {
     getTransactions();
